@@ -12,13 +12,16 @@ class Card():
 
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
+        print(mouse)
 
         if x + 113 > mouse[0] > x and y + 164 > mouse[1] > y :
             if self.move_sound_played == False:
-                move.play(0)
-                self.move_sound_played = True
+                if winner == False:
+                    move.play(0)
+                    self.move_sound_played = True
 
-            screen.blit(highlight, (x-25, y-37))
+            if winner == False:
+                screen.blit(highlight, (x-25, y-37))
 
             if click[0] == 1 and self.click == False:
                 self.click = True
@@ -113,6 +116,10 @@ game_over_continue = pygame.image.load('images/game_over_cont.PNG')
 game_over_end = pygame.image.load('images/game_over_end.PNG')
 win_continue = pygame.image.load('images/win_choice_cont.PNG')
 win_end = pygame.image.load('images/win_choice_end.PNG')
+three_guesses = pygame.image.load('images/3_guesses.jpg')
+two_guesses = pygame.image.load('images/2_guesses.jpg')
+one_guess = pygame.image.load('images/1_guess.jpg')
+zero_guesses = pygame.image.load('images/0_guesses.jpg')
 
 # Initialize the game engine
 pygame.init()
@@ -154,28 +161,6 @@ matches = 0
 
 current_board = select_board()
 
-"""
-card1 = Card('flower')
-card2 = Card('star')
-card3 = Card('oneup')
-card4 = Card('flower')
-card5 = Card('twenty')
-card6 = Card('mushroom')
-
-card7 = Card('ten')
-card8 = Card('mushroom')
-card9 = Card('twenty')
-card10 = Card('oneup')
-card11 = Card('mushroom')
-card12 = Card('ten')
-
-card13 = Card('star')
-card14 = Card('flower')
-card15 = Card('star')
-card16 = Card('mushroom')
-card17 = Card('flower')
-card18 = Card('star')
-"""
 card1 = Card(current_board[0])
 card2 = Card(current_board[1])
 card3 = Card(current_board[2])
@@ -202,11 +187,15 @@ full_set = [card1, card2, card3, card4, card5, card6, card7, card8, card9, card1
 
 match_counter = 0
 game_won = 18
-guess_count = 0
+wrong_guesses = 0
 winner = False
+end_move_played = False
+c_move = False
+e_move = False
      
 while done == False:
 
+    
     # Game running at 30 frames per second
     clock.tick(30)
 
@@ -221,34 +210,15 @@ while done == False:
     screen.blit(tborder, (0, 0))
     screen.blit(rborder, (1154, 0))
     
-    screen.blit(hud, (-15, 730))
-
-    
-    """
-    # Top Row
-    card1.flipped = card1.place(back, flower, 160, 130)
-    card2.flipped = card2.place(back, star, 310, 130)
-    card3.flipped = card3.place(back, oneup, 460, 130)
-    card4.flipped = card4.place(back, flower, 610, 130)
-    card5.flipped = card5.place(back, twenty, 760, 130)
-    card6.flipped = card6.place(back, mushroom, 910, 130)
-
-    # Middle Row
-    card7.flipped = card7.place(back, ten, 160, 370)
-    card8.flipped = card8.place(back, mushroom, 310, 370)
-    card9.flipped = card9.place(back, twenty, 460, 370)
-    card10.flipped = card10.place(back, oneup, 610, 370)
-    card11.flipped = card11.place(back, mushroom, 760, 370)
-    card12.flipped = card12.place(back, ten, 910, 370)
-
-    # Bottom Row
-    card13.flipped = card13.place(back, star, 160, 600)
-    card14.flipped = card14.place(back, flower, 310, 600)
-    card15.flipped = card15.place(back, star, 460, 600)
-    card16.flipped = card16.place(back, mushroom, 610, 600)
-    card17.flipped = card17.place(back, flower, 760, 600)
-    card18.flipped = card18.place(back, star, 910, 600)
-    """
+    if wrong_guesses == 0:
+        screen.blit(three_guesses, (-15, 730))
+    elif wrong_guesses == 1:
+        screen.blit(two_guesses, (-15, 730))
+    elif wrong_guesses == 2:
+        screen.blit(one_guess, (-15, 730))
+    else:
+        screen.blit(zero_guesses, (-15, 730))
+        
     x_card_coord = [160, 310, 460, 610, 760, 910, 160, 310, 460, 610, 760, 910, 160, 310, 460, 610, 760, 910]
     y_card_coord = [130, 130, 130, 130, 130, 130, 370, 370, 370, 370, 370, 370, 600, 600, 600, 600, 600, 600]
 
@@ -271,30 +241,6 @@ while done == False:
         control += 1
     
     control = 0
-
-    """# Top Row
-    card1.flipped = card1.place(back, 160, 130)
-    card2.flipped = card2.place(back, 310, 130)
-    card3.flipped = card3.place(back, 460, 130)
-    card4.flipped = card4.place(back, 610, 130)
-    card5.flipped = card5.place(back, 760, 130)
-    card6.flipped = card6.place(back, 910, 130)
-
-    # Middle Row
-    card7.flipped = card7.place(back, 160, 370)
-    card8.flipped = card8.place(back, 310, 370)
-    card9.flipped = card9.place(back, 460, 370)
-    card10.flipped = card10.place(back, 610, 370)
-    card11.flipped = card11.place(back, 760, 370)
-    card12.flipped = card12.place(back, 910, 370)
-
-    # Bottom Row
-    card13.flipped = card13.place(back, 160, 600)
-    card14.flipped = card14.place(back, 310, 600)
-    card15.flipped = card15.place(back, 460, 600)
-    card16.flipped = card16.place(back, 610, 600)
-    card17.flipped = card17.place(back, 760, 600)
-    card18.flipped = card18.place(back, 910, 600)"""
 
     counter = 0
    
@@ -332,6 +278,7 @@ while done == False:
                         match1.flipped = False
                         match2.flipped = False
                         match2.flag = True
+                        wrong_guesses += 1
                         counter = 0
                         break
                         
@@ -347,15 +294,39 @@ while done == False:
         if winner == False:
             for_the_win.play(0)
             winner = True
-        screen.blit(win_continue, (260, 265))
+        ####
+        end_mouse = pygame.mouse.get_pos()
+        if 542 + 421 > end_mouse[0] > 542 and 488 + 54 > end_mouse[1] > 488 :
+            
+            #if self.move_sound_played == False:
+                #if winner == False:
+                    #move.play(0)
+                    #self.move_sound_played = True
+            screen.blit(win_continue, (240, 265))
+            if end_move_played == False:
+                end_move_played = True
+                move.play(0)
+                
+        elif 546 + 421 > end_mouse[0] > 546 and 539 + 54 > end_mouse[1] > 539:
+            screen.blit(win_end, (240, 265))
+            if end_move_played == False:
+                end_move_played = True
+                move.play(0)
+        else:
+            screen.blit(win_continue, (240, 265))
+            end_move_played = False
+                
+            
+
+            #if click[0] == 1 and self.click == False:
+                #self.click = True
+                #self.flipped = True
+        #else:
+            #self.move_sound_played = False
+        ####
+        
+        #screen.blit(win_continue, (240, 265))
 
     pygame.display.flip()
 
 pygame.quit()
-
-"""
-            if x.flipped == True and x.flipping_one == True:
-                time.sleep(2)
-            elif x.flipped == True and x.flipping_two == True:
-                time.sleep(2)
-"""
