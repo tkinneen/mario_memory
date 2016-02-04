@@ -16,11 +16,11 @@ class Card():
 
         if x + 113 > mouse[0] > x and y + 164 > mouse[1] > y :
             if self.move_sound_played == False:
-                if winner == False:
+                if winner == False and self.matched == False:
                     move.play(0)
                     self.move_sound_played = True
 
-            if winner == False:
+            if winner == False and self.matched == False:
                 screen.blit(highlight, (x-25, y-37))
 
             if click[0] == 1 and self.click == False:
@@ -40,8 +40,20 @@ class Card():
         """
 
         if self.flipped == True:
-            screen.blit(shape, (x, y))
-            return True
+
+            if self.flip_animation == 0:
+                screen.blit(flipping_white, (x, y))
+                self.flip_animation += 1
+            elif self.flip_animation == 1:
+                screen.blit(flipping_side, (x, y))
+                self.flip_animation += 1
+            elif self.flip_animation == 2:
+                screen.blit(flipping_pink, (x, y))
+                self.flip_animation += 1
+            elif self.flip_animation == 3:
+                screen.blit(shape, (x, y))
+                
+                return True
         
         else:
             if self.flag == True:
@@ -61,8 +73,7 @@ class Card():
     shape = ''
     click = False
     flag = False
-    flipping_one = False
-    flipping_two = False
+    flip_animation = 0
 
 def select_board():
 
@@ -102,7 +113,8 @@ hud = pygame.image.load('images/hud.jpg')
 
 # Import Card Images
 back = pygame.image.load('images/back.jpg')
-flipping = pygame.image.load('images/flipping.png')
+flipping_white = pygame.image.load('images/flipping_pink.png')
+flipping_pink = pygame.image.load('images/flipping_white.png')
 side = pygame.image.load('images/side.png')
 flipping_side = pygame.image.load('images/side.png')
 mushroom = pygame.image.load('images/mushroom.jpg')
@@ -278,6 +290,8 @@ while done == False:
                         match1.flipped = False
                         match2.flipped = False
                         match2.flag = True
+                        match1.flip_animation = 0
+                        match2.flip_animation = 0
                         wrong_guesses += 1
                         counter = 0
                         break
@@ -294,14 +308,10 @@ while done == False:
         if winner == False:
             for_the_win.play(0)
             winner = True
-        ####
+
         end_mouse = pygame.mouse.get_pos()
         if 542 + 421 > end_mouse[0] > 542 and 488 + 54 > end_mouse[1] > 488 :
-            
-            #if self.move_sound_played == False:
-                #if winner == False:
-                    #move.play(0)
-                    #self.move_sound_played = True
+        
             screen.blit(win_continue, (240, 265))
             if end_move_played == False:
                 end_move_played = True
@@ -316,16 +326,6 @@ while done == False:
             screen.blit(win_continue, (240, 265))
             end_move_played = False
                 
-            
-
-            #if click[0] == 1 and self.click == False:
-                #self.click = True
-                #self.flipped = True
-        #else:
-            #self.move_sound_played = False
-        ####
-        
-        #screen.blit(win_continue, (240, 265))
 
     pygame.display.flip()
 
